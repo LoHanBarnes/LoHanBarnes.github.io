@@ -1,16 +1,28 @@
 ---
 const menu = [
   {
-    id: 'about',
-    text: 'About',
+    id: '/',
+    text: 'Home',
   },
   {
-    id: 'work',
-    text: 'Work',
+    id: '/resources',
+    text: 'Resources',
   },
   {
-    id: 'contact',
-    text: 'Contact',
+    id: '/wet-invention-challenge',
+    text: 'WET Challenge',
+  },
+  {
+    id: '/capstone-project',
+    text: 'Capstone',
+  },
+  {
+    id: '/past-projects',
+    text: 'Past Projects',
+  },
+  {
+    id: '/blog',
+    text: 'Blog',
   },
 ]
 ---
@@ -24,19 +36,20 @@ const menu = [
           width="280"
           height="280"
           viewBox="0 0 280 280"
-          fill="none"
           xmlns="http://www.w3.org/2000/svg"
         >
-          <path
-            d="M240.245 0v263.2h-19.894V0h-39.756v263.2h-19.861V0h-39.755v280H280V0h-39.755Z"
-            fill="#160000"
-          >
-          </path>
-          <path d="M0 0v280h39.755V16.8H59.65V280h39.756V0H0Z" fill="#160000">
-          </path>
+          <text
+            x="140"
+            y="205"
+            text-anchor="middle"
+            font-family="sans-serif"
+            font-weight="700"
+            font-size="220"
+            fill="var(--color-secondary)"
+          >LB</text>
         </svg>
 
-        <span class="u-sr-only">Antoine Wodniack</span>
+        <span class="u-sr-only">LoHan Barnes</span>
       </a>
     </div><!-- .sb-logo -->
 
@@ -50,7 +63,7 @@ const menu = [
         {
           menu.map((item) => (
             <li class="sb__item js-menu-item">
-              <a href={'#' + item.id} class="js-menu-link">
+              <a href={item.id} class="js-menu-link">
                 <span class="sb__text">{item.text}</span>
               </a>
             </li>
@@ -61,7 +74,8 @@ const menu = [
 
     <ul class="sb-socials">
       <li class="sb__item">
-        <a href="https://codepen.io/wodniack" target="_blank" rel="noopener">
+        {/* TODO: point at your own CodePen once you have one */}
+        <a href="#" target="_blank" rel="noopener">
           <span
             class="sb__icon sb__icon--codepen"
             style="--path: path('M19.3184 6.01751L10.4517 0.105976C10.3477 0.0365379 10.2254 -0.000518799 10.1002 -0.000518799C9.97513 -0.000518799 9.85282 0.0365379 9.74874 0.105976L0.882076 6.01751C0.795245 6.07529 0.724029 6.15362 0.674752 6.24555C0.625475 6.33747 0.599663 6.44014 0.599609 6.54444V12.456C0.599609 12.6675 0.706009 12.8651 0.882076 12.9829L9.74874 18.8944C9.85269 18.9636 9.97476 19.0005 10.0996 19.0005C10.2245 19.0005 10.3465 18.9636 10.4505 18.8944L19.3171 12.9829C19.404 12.9251 19.4752 12.8468 19.5245 12.7549C19.5737 12.6629 19.5996 12.5603 19.5996 12.456V6.54444C19.5996 6.44014 19.5737 6.33747 19.5245 6.24555C19.4752 6.15362 19.404 6.07529 19.3171 6.01751H19.3184ZM10.1009 11.6934L6.80881 9.49958L10.1009 7.30571L13.3929 9.49958L10.1009 11.6934ZM10.7342 6.20498V1.81598L17.8263 6.54318L14.5342 8.73704L10.7342 6.20371V6.20498ZM9.46754 6.20498L5.66754 8.73831L2.37548 6.54444L9.46754 1.81724V6.20498ZM4.52628 9.49958L1.86754 11.2716V7.72751L4.52628 9.49958ZM5.66754 10.2608L9.46754 12.7942V17.1832L2.37548 12.456L5.66754 10.2608ZM10.7342 12.7942L14.5342 10.2608L17.8263 12.4547L10.7342 17.1819V12.7942ZM15.6755 9.49958L18.3342 7.72751V11.2716L15.6755 9.49958Z');"
@@ -73,8 +87,9 @@ const menu = [
       </li>
 
       <li class="sb__item">
+        {/* TODO: point at your own LinkedIn once you have one */}
         <a
-          href="https://www.linkedin.com/in/wodniack/"
+          href="#"
           target="_blank"
           rel="noopener"
         >
@@ -85,6 +100,18 @@ const menu = [
           </span>
 
           <span class="u-sr-only">Follow me on LinkedIn</span>
+        </a>
+      </li>
+
+      <li class="sb__item">
+        <a href="https://github.com/LoHanBarnes" target="_blank" rel="noopener">
+          <span
+            class="sb__icon sb__icon--github"
+            style="--path: path('M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z');"
+          >
+          </span>
+
+          <span class="u-sr-only">Follow me on GitHub</span>
         </a>
       </li>
     </ul><!-- .sb-socials -->
@@ -102,22 +129,23 @@ const menu = [
     <aside class="sb-availability">
       <p>
         <span class="sb__line">
-          <span class="sb__text">Coding globally from France.</span>
+          <span class="sb__text">Engineering from Santa Monica, CA.</span>
         </span>
 
         <span class="sb__line">
-          <span class="sb__text">Available for freelance work →</span>
+          <span class="sb__text">Questions or feedback →</span>
 
-          <a href="mailto:hello@wodniack.dev" class="sb__link">Hire me</a>
+          <a href="mailto:lohanbarnes@gmail.com" class="sb__link">Email me</a>
         </span>
       </p>
     </aside><!-- .sb-availability -->
 
     <a
-      href="mailto:hello@wodniack.dev"
+      href="mailto:lohanbarnes@gmail.com"
       class="sb-qr-code js-qr-code"
       title="Contact me!"
     >
+      {/* TODO: this QR image is still Antoine's placeholder graphic — regenerate one that points at lohanbarnes@gmail.com, or drop this element */}
       <img src="/images/qr-code.svg" alt="QR Code" width="72" height="72" />
     </a><!-- .sb-qr-code -->
   </div><!-- .site-head__container -->
@@ -386,9 +414,12 @@ const menu = [
      * Move to section
      */
     moveToSection(e) {
-      e.preventDefault()
-
       const id = e.currentTarget.getAttribute('href')
+
+      // Only intercept same-page anchors; real page links navigate normally
+      if (!id.startsWith('#')) return
+
+      e.preventDefault()
 
       window.lenis.scrollTo(id, {
         duration: 1.5,
@@ -713,6 +744,11 @@ const menu = [
         &--linkedin {
           width: 16px;
           height: 15px;
+        }
+
+        &--github {
+          width: 16px;
+          height: 16px;
         }
       }
 

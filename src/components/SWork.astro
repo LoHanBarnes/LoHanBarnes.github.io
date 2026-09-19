@@ -4,61 +4,55 @@ import dummyVideo from '/src/assets/works/Dummy.mp4'
 
 const videos = await Astro.glob<{ default: any }>('/src/assets/works/*.mp4')
 
-// Yeah, this should probably be in a CMS or content file.
-// But it’s my site, and editing it in code is faster than setting up yet another headless something.
-// Sometimes "quick and dirty" wins. Don’t @ me.
+// No real project footage yet, so these all share the same generic loop —
+// only the captions are real, pulled from actual past projects/competitions.
 const info = {
-  Pen: {
-    title: 'CodePen',
-    site: 'https://codepen.io/wodniack',
-  },
   Dummy1: {
-    title: 'Dummy Project 1',
-    site: 'https://wodniack.dev',
+    title: 'RC Car',
+    site: '/blog',
   },
   Dummy2: {
-    title: 'Dummy Project 2',
-    site: 'https://wodniack.dev',
+    title: 'Nerf Turret',
+    site: '/blog',
   },
   Dummy3: {
-    title: 'Dummy Project 3',
-    site: 'https://wodniack.dev',
+    title: 'Beach Cleaner',
+    site: '/blog',
   },
   Dummy4: {
-    title: 'Dummy Project 4',
-    site: 'https://wodniack.dev',
+    title: 'Robotic Arm (ft. Rhys)',
+    site: '/blog',
   },
   Dummy5: {
-    title: 'Dummy Project 5',
-    site: 'https://wodniack.dev',
+    title: 'Wake Up Device',
+    site: '/blog',
   },
   Dummy6: {
-    title: 'Dummy Project 6',
-    site: 'https://wodniack.dev',
+    title: "WET 'Quest'",
+    site: '/blog',
   },
   Dummy7: {
-    title: 'Dummy Project 7',
-    site: 'https://wodniack.dev',
+    title: 'FRC',
+    site: '/blog',
   },
   Dummy8: {
-    title: 'Dummy Project 8',
-    site: 'https://wodniack.dev',
+    title: 'FTC',
+    site: '/blog',
   },
   Dummy9: {
-    title: 'Dummy Project 9',
-    site: 'https://wodniack.dev',
+    title: 'UCLA Rovers',
+    site: '/blog',
   },
   Dummy10: {
-    title: 'Dummy Project 10',
-    site: 'https://wodniack.dev',
+    title: '3D Printing Fail',
+    site: '/blog',
   }
 }
 
 let projects = []
 let pens = []
 
-// I removed the video loops to keep the repo lightweight.
-// But this is where I normally fetch and assign the videos for each project in the portfolio.
+// Real project videos get fetched and assigned here once you have them
 videos.forEach((video, index) => {
   const src = video.default
 
@@ -91,7 +85,7 @@ for (let i = 1; i <= 14; i++) {
 
   for (let j = 0; j < 4; j++) {
     projects.push({
-      caption: `${project.title} - Video ${j + 1}`,
+      caption: project.title,
       site: project.site,
       src: dummyVideo
     })
@@ -938,6 +932,12 @@ while (i < projects.length) {
 
 <style lang="scss">
   .s-work {
+    // This section is excluded from the site-wide blue/orange redesign —
+    // pinned to the original red/black regardless of the active theme.
+    --color-primary: #ff3d6e;
+    --color-secondary: #160000;
+    --color-shadow: #6e0030;
+
     --height: 100lvh;
 
     position: relative;

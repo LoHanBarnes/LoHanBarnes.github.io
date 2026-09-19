@@ -1,4 +1,14 @@
-# License
+# License & Attribution
+
+## Notice
+
+This project is a derivative work built on top of [public.wodniack.dev](https://github.com/AntoineW/AW-2025-Portfolio) by **Antoine Wodniack**, which he open-sourced under the license below.
+
+Changes made in this fork: restructured from a single-page portfolio into a multi-page site (Homepage, Resources, WET Invention Challenge, Capstone Project, Past Projects, Blog), personal identity/content/media swapped for LoHan Barnes', award and past-work content removed, and the color palette adjusted.
+
+The underlying animation/component code (Astro components, GSAP choreography, SCSS system) remains Antoine Wodniack's work, used here under the terms below.
+
+---
 
 This work is licensed under the **Creative Commons Attribution-NonCommercial 4.0 International License (CC BY-NC 4.0)**.
 
@@ -13,20 +23,6 @@ Under the following terms:
 - **NonCommercial** — You may not use the material for commercial purposes.
 
 No additional restrictions — You may not apply legal terms or technological measures that legally restrict others from doing anything the license permits.
-
----
-
-## Summary
-
-This project is shared to support learning, experimentation, and growth in the developer community. You are welcome to explore, study, and adapt it for your own personal or educational purposes.
-
-**Do not**:
-- Copy/paste it to create your own portfolio without significant modification.
-- Sell, repackage, or commercially exploit it.
-
-Let it inspire your own ideas, not replace them.
-
----
 
 ## Full License Text
 

@@ -7,7 +7,8 @@ const __dirname = dirname(__filename);
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://public.wodniack.dev',
+  // TODO: finalize once you know the repo name — see note below
+  site: 'https://lohanbarnes.github.io',
 
   scopedStyleStrategy: 'class',
 

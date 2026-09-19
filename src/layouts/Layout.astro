@@ -1,0 +1,146 @@
+---
+import SiteHead from '../components/SiteHead.astro'
+import SiteFoot from '../components/SiteFoot.astro'
+import SiteScrollbar from '../components/SiteScrollbar.astro'
+import ASeparator from '../components/ASeparator.astro'
+
+import '../styles/global.scss'
+
+const { title, description = '' } = Astro.props
+---
+
+<html lang="en" class="theme-contrasted">
+  <head>
+    <meta charset="utf-8" />
+
+    <title>{title} — LoHan Barnes</title>
+
+    {description && <meta name="description" content={description} />}
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
+
+    <link
+      rel="icon"
+      type="image/png"
+      href="/icons/favicon-48x48.png"
+      sizes="48x48"
+    />
+    <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg" />
+    <link rel="shortcut icon" href="/icons/favicon.ico" />
+    <link
+      rel="apple-touch-icon"
+      sizes="180x180"
+      href="/icons/apple-touch-icon.png"
+    />
+    <meta name="apple-mobile-web-app-title" content="LoHan Barnes" />
+
+    <meta name="theme-color" content="#ff7a1a" />
+  </head>
+
+  <body>
+    <div class="site-wrapper">
+      <SiteHead />
+
+      <ASeparator style="secondary" strings={['LoHan', 'Barnes']} />
+
+      <main class="page">
+        <slot />
+      </main>
+
+      <ASeparator style="secondary" strings={['Learn', 'Build', 'Iterate']} />
+
+      <SiteFoot />
+    </div><!-- .site-wrapper -->
+
+    <SiteScrollbar />
+  </body>
+
+  <script>
+    import Emitter from '../utils/Emitter'
+    import Ticker from '../utils/Ticker'
+    import SiteCore from '../utils/SiteCore'
+
+    declare global {
+      interface Window {
+        safeWidth: number
+        safeHeight: number
+        maxScrollTop: number
+        scrollProgress: number
+        lenis: any
+      }
+    }
+
+    class Page extends SiteCore {
+      /**
+       * Initialization
+       */
+      init() {
+        super.init()
+
+        // Subpages skip the homepage's multi-second logo-draw loader:
+        // reveal immediately and let components run their own short intro.
+        Ticker.nextTick(() => {
+          document.dispatchEvent(new CustomEvent('intro'))
+          Emitter.emit('updateViewport')
+        })
+      }
+    }
+
+    const page = new Page()
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', page.init.bind(page), {
+        once: true,
+      })
+    } else {
+      page.init()
+    }
+  </script>
+
+  <style lang="scss">
+    .page {
+      position: relative;
+      z-index: 2;
+
+      margin: 4rem auto;
+      padding: 4.5rem;
+      max-width: 50rem;
+
+      background: color(primary);
+      border: 1px solid color(secondary);
+
+      @include mq(phone) {
+        margin: 2rem auto;
+        padding: 2rem 1.25rem;
+      }
+
+      :global(h1) {
+        margin: 0 0 2rem;
+
+        font: 700 min(8vw, 4.5rem) / 0.95 font-family(bigger);
+        text-transform: uppercase;
+      }
+
+      :global(h2) {
+        margin: 3rem 0 1rem;
+
+        font: 700 1.5rem / 1.2 font-family(fraktion);
+        text-transform: uppercase;
+      }
+
+      :global(p),
+      :global(li) {
+        font: 200 1.25rem / 1.6 font-family(editorial);
+      }
+
+      :global(ul) {
+        margin: 0 0 1.5rem;
+        padding-left: 1.5rem;
+      }
+
+      :global(a) {
+        color: color(secondary);
+      }
+    }
+  </style>
+</html>

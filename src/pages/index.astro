@@ -16,16 +16,13 @@ import '../styles/global.scss'
   <head>
     <meta charset="utf-8" />
 
-    <title>AW 2025 Portfolio – Open Source Edition</title>
+    <title>LoHan Barnes – Engineering Capstone Notebook</title>
 
     <meta
       name="description"
-      content="Take a peek behind the scenes of a senior dev’s awarded portfolio. Clone it, learn from it, build your own. But don’t just steal it—the community will call you out, and you’ll doom yourself to eternal mediocrity." />
+      content="LoHan Barnes' digital engineering notebook — capstone projects, the WET Invention Challenge, past work, and course blog." />
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
-
-    <meta name="robots" content="noindex, nofollow" />
-    <link rel="canonical" href="https://public.wodniack.dev/" />
 
     <link
       rel="icon"
@@ -40,23 +37,17 @@ import '../styles/global.scss'
       sizes="180x180"
       href="/icons/apple-touch-icon.png"
     />
-    <meta name="apple-mobile-web-app-title" content="AW Portfolio" />
+    <meta name="apple-mobile-web-app-title" content="LoHan Barnes" />
 
-    <meta name="theme-color" content="#160000" />
-    <meta name="msapplication-navbutton-color" content="#160000" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="#160000" />
+    <meta name="theme-color" content="#ff7a1a" />
+    <meta name="msapplication-navbutton-color" content="#ff7a1a" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="#ff7a1a" />
 
-    <meta property="og:locale" content="en_GB" />
+    <meta property="og:locale" content="en_US" />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Antoine Wodniack 2025 Portfolio – Open Source Edition" />
-    <meta property="og:description" content="Take a peek behind the scenes of a senior dev’s awarded portfolio. Clone it, learn from it, build your own. But don’t just steal it—the community will call you out, and you’ll doom yourself to eternal mediocrity." />
-    <meta property="og:url" content="https://public.wodniack.dev/" />
-    <meta property="og:site_name" content="Antoine Wodniack 2025 Portfolio – Open Source Edition" />
-    <meta property="og:image" content="https://public.wodniack.dev/images/aw-creative-developer.png" />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="675" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:image" content="https://public.wodniack.dev/images/aw-creative-developer.png" />
+    <meta property="og:title" content="LoHan Barnes – Engineering Capstone Notebook" />
+    <meta property="og:description" content="LoHan Barnes' digital engineering notebook — capstone projects, the WET Invention Challenge, past work, and course blog." />
+    <!-- TODO: once this is deployed, set og:url to the live site and add an og:image (a personal photo works well) -->
 
     <link
       rel="preload"
@@ -146,14 +137,10 @@ import '../styles/global.scss'
   </body>
 
   <script>
-    import Emitter from '../utils/Emitter'
     import Ticker from '../utils/Ticker'
-
-    import Lenis from 'lenis'
+    import SiteCore from '../utils/SiteCore'
 
     import { gsap } from 'gsap'
-    import { ScrollTrigger } from 'gsap/ScrollTrigger'
-    gsap.registerPlugin(ScrollTrigger)
 
     declare global {
       interface Window {
@@ -165,224 +152,14 @@ import '../styles/global.scss'
       }
     }
 
-    class Site {
-      timeouts: any = {
-        resizeThrottle: null,
-      }
-
-      windowWidth: number
-      windowHeight: number
-      clientWidth: number
-      clientHeight: number
-
-      isScrolling: boolean = false
-
-      lenis: any
-
-      /**
-       * Constructor
-       */
-      constructor() {
-        // OS class
-        let os = 'unknown'
-        if (navigator.userAgent.indexOf('Win') !== -1) {
-          os = 'windows'
-        } else if (navigator.userAgent.indexOf('Android') !== -1) {
-          os = 'android'
-        } else if (navigator.userAgent.indexOf('Mac') !== -1) {
-          os = 'mac'
-        } else if (navigator.userAgent.indexOf('Linux') !== -1) {
-          os = 'linux'
-        }
-        document.documentElement.classList.add(`is-${os}`)
-
-        // Browser class
-        let browser = 'unknown'
-        if (navigator.userAgent.indexOf('Firefox') !== -1) {
-          browser = 'firefox'
-        } else if (navigator.userAgent.indexOf('Chrome') !== -1) {
-          browser = 'chrome'
-        } else if (navigator.userAgent.indexOf('Safari') !== -1) {
-          browser = 'safari'
-        }
-        document.documentElement.classList.add(`is-${browser}`)
-
-        this.bindEvents()
-      }
-
+    class Site extends SiteCore {
       /**
        * Initialization
        */
       init() {
-        this.initLenis()
+        super.init()
 
-        Ticker.init()
-
-        this.onResize()
         Ticker.nextTick(this.intro, this)
-      }
-
-      /**
-       * Bind events
-       */
-      bindEvents() {
-        window.addEventListener('resize', this.resizeThrottle.bind(this))
-        window.addEventListener('scroll', this.onScroll.bind(this), {
-          passive: true,
-        })
-        window.addEventListener('mousemove', this.onMouseMove.bind(this), {
-          passive: true,
-        })
-
-        Emitter.on('updateViewport', this.onResize, this, true)
-
-        const observer = new IntersectionObserver(
-          (entries) => {
-            entries.forEach((entry) => {
-              entry.target.dispatchEvent(
-                new CustomEvent('intersect', {
-                  detail: { isIntersecting: entry.isIntersecting },
-                })
-              )
-
-              if (entry.isIntersecting) {
-                entry.target.classList.add('is-in-view')
-                entry.target.classList.remove(
-                  'is-out-of-view',
-                  'is-out-of-view-top',
-                  'is-out-of-view-bottom'
-                )
-              } else {
-                entry.target.classList.remove('is-in-view')
-                entry.target.classList.add('is-out-of-view')
-
-                entry.target.classList.toggle(
-                  'is-out-of-view-top',
-                  entry.boundingClientRect.top < 0
-                )
-                entry.target.classList.toggle(
-                  'is-out-of-view-bottom',
-                  entry.boundingClientRect.top > 0
-                )
-              }
-            })
-          },
-          {
-            threshold: 0,
-          }
-        )
-
-        document.querySelectorAll('[data-intersect]').forEach((el) => {
-          observer.observe(el)
-        })
-
-        // Site loaded event
-        if (document.readyState === 'complete') {
-          this.siteLoaded()
-        } else {
-          window.addEventListener('load', this.siteLoaded, { once: true })
-        }
-
-        this.onScroll()
-      }
-
-      /**
-       * Init lenis
-       */
-      initLenis() {
-        const lenis = new Lenis()
-
-        lenis.on('scroll', ScrollTrigger.update)
-
-        gsap.ticker.add((time) => {
-          lenis.raf(time * 1000)
-        })
-
-        gsap.ticker.lagSmoothing(0)
-
-        window.lenis = lenis
-        this.lenis = lenis
-      }
-
-      /**
-       * Set loaded class
-       */
-      siteLoaded() {
-        document.documentElement.classList.add('is-loaded')
-
-        Emitter.emit('siteLoaded')
-      }
-
-      /**
-       * Resize throttle
-       */
-      resizeThrottle() {
-        clearTimeout(this.timeouts.resizeThrottle)
-
-        this.timeouts.resizeThrottle = setTimeout(() => {
-          Ticker.nextTick(this.onResize, this)
-        }, 200)
-      }
-
-      /**
-       * Resize handler
-       */
-      onResize() {
-        const newWidth = window.innerWidth
-        let widthChanged = false
-        if (this.windowWidth !== newWidth) {
-          if (this.windowWidth !== undefined) {
-            widthChanged = true
-          }
-
-          this.windowWidth = newWidth
-          this.clientWidth = document.body.clientWidth
-        }
-
-        const newHeight = window.innerHeight
-        let heightChanged = false
-        if (this.windowHeight !== newHeight) {
-          if (this.windowHeight !== undefined) {
-            heightChanged = true
-          }
-
-          this.windowHeight = newHeight
-          this.clientHeight = document.body.clientHeight
-        }
-
-        window.safeWidth = newWidth
-        window.safeHeight = newHeight
-
-        window.maxScrollTop = document.body.scrollHeight - window.safeHeight
-
-        this.setScrollProgress()
-
-        Emitter.emit('resize', widthChanged, heightChanged)
-      }
-
-      /**
-       * Scroll handler
-       */
-      onScroll() {
-        this.setScrollProgress()
-
-        Ticker.nextTick(() => {
-          Emitter.emit('scroll', window.scrollY)
-        })
-      }
-
-      /**
-       * Set scroll progress
-       */
-      setScrollProgress() {
-        window.scrollProgress = window.scrollY / window.maxScrollTop
-      }
-
-      /**
-       * Mouse move handler
-       */
-      onMouseMove(e) {
-        Emitter.emit('mousemove', e.clientX, e.clientY)
       }
 
       /**
@@ -523,7 +300,9 @@ import '../styles/global.scss'
 
     // Site init on DOM ready
     if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', site.init, { once: true })
+      document.addEventListener('DOMContentLoaded', site.init.bind(site), {
+        once: true,
+      })
     } else {
       site.init()
     }

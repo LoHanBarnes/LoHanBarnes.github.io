@@ -3,11 +3,14 @@ const { caption, cssClass, index, site, src, total } = Astro.props
 
 // A random string with the syntax '[a-z][0-9]{3}-index-total'
 const key = Math.random().toString(36).slice(2, 6) + '-' + index + '/' + total
+
+// Internal links (site pages) navigate in the same tab; external links open in a new one
+const isInternal = site.startsWith('/') || site === '#'
 ---
 
 <a-work class={cssClass}>
   <div class="a__inner">
-    <a href={site} target="_blank">
+    <a href={site} target={isInternal ? undefined : '_blank'} rel={isInternal ? undefined : 'noopener'}>
       <video
         data-src={src}
         class="a__video js-video"

@@ -1,30 +1,45 @@
+---
+const menu = [
+  { id: '/', text: 'Home' },
+  { id: '/resources', text: 'Resources' },
+  { id: '/wet-invention-challenge', text: 'WET Challenge' },
+  { id: '/capstone-project', text: 'Capstone' },
+  { id: '/past-projects', text: 'Past Projects' },
+  { id: '/blog', text: 'Blog' },
+]
+---
+
 <footer class="site-foot">
   <div class="site-foot__logo">
     <a href="/">
-      <svg
-        width="280"
-        height="280"
-        viewBox="0 0 280 280"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M240.245 0v263.2h-19.894V0h-39.756v263.2h-19.861V0h-39.755v280H280V0h-39.755Z"
-          fill="#160000"
-        >
-        </path>
-        <path d="M0 0v280h39.755V16.8H59.65V280h39.756V0H0Z" fill="#160000">
-        </path>
+      <svg width="280" height="280" viewBox="0 0 280 280" xmlns="http://www.w3.org/2000/svg">
+        <text
+          x="140"
+          y="205"
+          text-anchor="middle"
+          font-family="sans-serif"
+          font-weight="700"
+          font-size="220"
+          fill="var(--color-secondary)"
+        >LB</text>
       </svg>
 
-      <span class="u-sr-only">Antoine Wodniack</span>
+      <span class="u-sr-only">LoHan Barnes</span>
     </a>
   </div><!-- .site-foot__logo -->
+
+  <nav class="site-foot__nav" aria-label="Site pages">
+    <ul>
+      {menu.map((item) => (
+        <li><a href={item.id}>{item.text}</a></li>
+      ))}
+    </ul>
+  </nav><!-- .site-foot__nav, always visible so pages stay reachable on mobile -->
 </footer>
 
 <style lang="scss">
   .site-foot {
-    @include flex(row, center, center);
+    @include flex(row, center, space-between);
 
     position: relative;
     z-index: 3;
@@ -34,6 +49,8 @@
     border-top: 1px solid color(secondary);
 
     @include mq(phone) {
+      @include flex(column, center, center);
+
       padding: 1rem;
     }
 
@@ -46,6 +63,44 @@
         @include mq(phone) {
           width: 1.875rem;
           height: 1.875rem;
+        }
+      }
+    }
+
+    &__nav {
+      ul {
+        @include flex(row, center, center);
+
+        margin: 0;
+        padding: 0;
+
+        list-style: none;
+
+        flex-wrap: wrap;
+
+        @include mq(phone) {
+          margin-top: 0.75rem;
+          justify-content: center;
+        }
+      }
+
+      li {
+        margin: 0 0 0 1.5rem;
+
+        @include mq(phone) {
+          margin: 0.25rem 0.75rem;
+        }
+      }
+
+      a {
+        color: color(secondary);
+        font: 400 12px / 1 font-family(fraktion);
+        letter-spacing: 0.05em;
+        text-decoration: none;
+        text-transform: uppercase;
+
+        &:hover {
+          text-decoration: underline;
         }
       }
     }
