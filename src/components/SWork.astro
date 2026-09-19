@@ -4,48 +4,65 @@ import dummyVideo from '/src/assets/works/Dummy.mp4'
 
 const videos = await Astro.glob<{ default: any }>('/src/assets/works/*.mp4')
 
-// No real project footage yet, so these all share the same generic loop —
-// only the captions are real, pulled from actual past projects/competitions.
+// No real project footage or dedicated pages yet, so the past-project/
+// competition tiles have no link for now. The 4 blog tiles link directly
+// to their posts, since that content actually exists.
 const info = {
   Dummy1: {
     title: 'RC Car',
-    site: '/blog',
+    site: '#',
   },
   Dummy2: {
     title: 'Nerf Turret',
-    site: '/blog',
+    site: '#',
   },
   Dummy3: {
     title: 'Beach Cleaner',
-    site: '/blog',
+    site: '#',
   },
   Dummy4: {
     title: 'Robotic Arm (ft. Rhys)',
-    site: '/blog',
+    site: '#',
   },
   Dummy5: {
     title: 'Wake Up Device',
-    site: '/blog',
+    site: '#',
   },
   Dummy6: {
     title: "WET 'Quest'",
-    site: '/blog',
+    site: '#',
   },
   Dummy7: {
     title: 'FRC',
-    site: '/blog',
+    site: '#',
   },
   Dummy8: {
     title: 'FTC',
-    site: '/blog',
+    site: '#',
   },
   Dummy9: {
     title: 'UCLA Rovers',
-    site: '/blog',
+    site: '#',
   },
   Dummy10: {
     title: '3D Printing Fail',
-    site: '/blog',
+    site: '#',
+  },
+  Dummy11: {
+    title: 'Blog #1',
+    site: '/blog/blog-1',
+  },
+  Dummy12: {
+    title: 'Blog #2',
+    site: '/blog/blog-2',
+  },
+  Dummy13: {
+    title: 'Blog #3',
+    site: '/blog/blog-3',
+  },
+  Dummy14: {
+    title: 'Blog #4',
+    site: '/blog/blog-4',
   }
 }
 

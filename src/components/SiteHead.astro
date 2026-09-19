@@ -674,16 +674,11 @@ const menu = [
     }
 
     .sb-socials {
+      @include flex(column, stretch, flex-start);
+
       margin: 0;
       padding: 0;
 
-      background: linear-gradient(
-        0deg,
-        transparent calc(50% - 1px),
-        color(secondary) calc(50% - 1px),
-        color(secondary) 50%,
-        transparent 50%
-      );
       border-left: 1px solid color(secondary);
       list-style: none;
 
@@ -698,20 +693,30 @@ const menu = [
 
         margin-left: auto;
 
-        background: none;
         border-left: 0;
       }
 
       .sb__item {
+        flex: 1;
+
         margin: 0;
         padding: 0;
+
+        &:not(:last-child) {
+          border-bottom: 1px solid color(secondary);
+        }
 
         @include mq(phone) {
           @include flex(column, center, center);
 
+          flex: none;
           height: 100%;
 
           border-left: 1px solid color(secondary);
+
+          &:not(:last-child) {
+            border-bottom: 0;
+          }
         }
       }
 
@@ -758,11 +763,7 @@ const menu = [
         position: relative;
 
         width: 48px;
-        height: 48px;
-
-        @include mq(phone) {
-          height: 100%;
-        }
+        height: 100%;
 
         &:before {
           position: absolute;
