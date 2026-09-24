@@ -1125,37 +1125,44 @@ import { awards } from '../config/awards'
     left: 0;
     z-index: 20;
 
-    padding: 1rem 1.25rem;
-    width: 16rem;
+    padding: 1.5rem 1.75rem;
+    width: 20rem;
 
-    background: color(secondary);
-    border: 1px solid color(primary);
+    background: color(primary);
+    border: 1px solid color(secondary);
+    border-radius: 1rem;
 
-    color: color(primary);
+    color: color(secondary);
 
     opacity: 0;
-    transform: translate3d(var(--x, 0px), var(--y, 0px), 0);
+    transform: translate3d(var(--x, 0px), calc(var(--y, 0px) - 0.625rem), 0);
     pointer-events: none;
 
-    transition: opacity 0.2s ease(out-quint);
+    transition:
+      opacity 0.3s ease(out-quint),
+      transform 0.3s ease(out-quint);
     will-change: transform, opacity;
 
     &.is-visible {
       opacity: 1;
       pointer-events: auto;
+
+      transform: translate3d(var(--x, 0px), var(--y, 0px), 0);
     }
 
     &__image {
       display: block;
-      margin: 0 0 0.75rem;
+      margin: 0 0 1rem;
       width: 100%;
       height: auto;
+
+      border-radius: 0.5rem;
     }
 
     &__name {
-      margin: 0 0 0.35rem;
+      margin: 0 0 0.4rem;
 
-      font: 700 0.8rem / 1.1 font-family(fraktion);
+      font: 700 1rem / 1.2 font-family(fraktion);
       letter-spacing: 0.05em;
       text-transform: uppercase;
     }
@@ -1163,7 +1170,7 @@ import { awards } from '../config/awards'
     &__desc {
       display: block;
 
-      font: 200 1.1rem / 1.4 font-family(editorial);
+      font: 200 1.35rem / 1.4 font-family(editorial);
     }
   }
 </style>
