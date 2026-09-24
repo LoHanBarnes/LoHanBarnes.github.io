@@ -1,12 +1,5 @@
 ---
-const menu = [
-  { id: '/', text: 'Home' },
-  { id: '/resources', text: 'Resources' },
-  { id: '/wet-invention-challenge', text: 'WET Challenge' },
-  { id: '/capstone-project', text: 'Capstone' },
-  { id: '/past-projects', text: 'Past Projects' },
-  { id: '/blog', text: 'Blog' },
-]
+import { site, nav as menu } from '../config/site'
 ---
 
 <footer class="site-foot">
@@ -24,7 +17,7 @@ const menu = [
         >LB</text>
       </svg>
 
-      <span class="u-sr-only">LoHan Barnes</span>
+      <span class="u-sr-only">{site.name}</span>
     </a>
   </div><!-- .site-foot__logo -->
 

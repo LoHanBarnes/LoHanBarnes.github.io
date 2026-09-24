@@ -1,4 +1,6 @@
 ---
+import { site } from '../config/site'
+
 const lines = [
   ['L', 'e', 't<span class="sup">\'</span>', 's'],
   ['R', 'o', 'c', 'k'],
@@ -38,12 +40,12 @@ const lines = [
           ))
         }
         <a
-          href="https://mail.google.com/mail/?view=cm&fs=1&to=lohanbarnes@gmail.com"
+          href={site.emailHref}
           target="_blank"
           rel="noopener"
           class="s__cta__link"
         >
-          lohanbarnes@gmail.com
+          {site.email}
         </a>
 
         <div class="s__cta__stars">

@@ -1,70 +1,9 @@
 ---
 import AWork from './AWork.astro'
 import dummyVideo from '/src/assets/works/Dummy.mp4'
+import { workInfo as info } from '../config/work'
 
 const videos = await Astro.glob<{ default: any }>('/src/assets/works/*.mp4')
-
-// No real project footage or dedicated pages yet, so the past-project/
-// competition tiles have no link for now. The 4 blog tiles link directly
-// to their posts, since that content actually exists.
-const info = {
-  Dummy1: {
-    title: 'RC Car',
-    site: '#',
-  },
-  Dummy2: {
-    title: 'Nerf Turret',
-    site: '#',
-  },
-  Dummy3: {
-    title: 'Beach Cleaner',
-    site: '#',
-  },
-  Dummy4: {
-    title: 'Robotic Arm (ft. Rhys)',
-    site: '#',
-  },
-  Dummy5: {
-    title: 'Wake Up Device',
-    site: '#',
-  },
-  Dummy6: {
-    title: "WET 'Quest'",
-    site: '#',
-  },
-  Dummy7: {
-    title: 'FRC',
-    site: '#',
-  },
-  Dummy8: {
-    title: 'FTC',
-    site: '#',
-  },
-  Dummy9: {
-    title: 'UCLA Rovers',
-    site: '#',
-  },
-  Dummy10: {
-    title: '3D Printing Fail',
-    site: '#',
-  },
-  Dummy11: {
-    title: 'Blog #1',
-    site: '/blog/blog-1',
-  },
-  Dummy12: {
-    title: 'Blog #2',
-    site: '/blog/blog-2',
-  },
-  Dummy13: {
-    title: 'Blog #3',
-    site: '/blog/blog-3',
-  },
-  Dummy14: {
-    title: 'Blog #4',
-    site: '/blog/blog-4',
-  }
-}
 
 let projects = []
 let pens = []

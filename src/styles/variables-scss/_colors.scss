@@ -1,5 +1,16 @@
 /**
- * Colors variables
+ * MASTER COLOR CONFIG
+ * Every color on the site (except src/components/SWork.astro, which is
+ * intentionally pinned to its own red/black and ignores this file) comes
+ * from these two maps via the color() function in helpers/_colors.scss.
+ * Change a value here and it updates everywhere at once.
+ *
+ * A few things outside the SCSS build can't read these variables and are
+ * hardcoded to match by hand: the intro splash background and the
+ * <meta name="theme-color"> tags in src/pages/index.astro and
+ * src/layouts/Layout.astro, plus the fill/stroke colors baked into the
+ * static SVGs in public/images/. Keep those in sync manually if you
+ * change the palette here.
  */
 @use 'sass:map';
 
