@@ -47,6 +47,16 @@ import { site, socials, nav as menu } from '../config/site'
       </ul>
     </nav><!-- .sb-menu -->
 
+    <div class="sb-avatar">
+      <img
+        src="/images/avatar-chinchilla.png"
+        alt="My chinchilla"
+        width="96"
+        height="96"
+        class="sb-avatar__img"
+      />
+    </div><!-- .sb-avatar -->
+
     <ul class="sb-socials">
       <li class="sb__item">
         <a href={socials.codepen} target="_blank" rel="noopener">
@@ -649,6 +659,36 @@ import { site, socials, nav as menu } from '../config/site'
           .sb__text:before {
             animation: blink-in 0.3s ease(in-out-expo) forwards;
           }
+        }
+      }
+    }
+
+    .sb-avatar {
+      @include flex(row, center, center);
+
+      padding: 0.75rem;
+
+      border-left: 1px solid color(secondary);
+
+      @include mq(desktop-sm) {
+        display: none;
+      }
+
+      &__img {
+        display: block;
+
+        width: 3rem;
+        height: 3rem;
+
+        aspect-ratio: 1 / 1;
+        border: 1px solid color(secondary);
+        border-radius: 999rem;
+
+        object-fit: cover;
+
+        @include mq(phone) {
+          width: 1.875rem;
+          height: 1.875rem;
         }
       }
     }
