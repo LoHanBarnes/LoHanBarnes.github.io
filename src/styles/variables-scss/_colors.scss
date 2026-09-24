@@ -4,17 +4,19 @@
 @use 'sass:map';
 
 $theme-colors: (
+  // "default" is the dark-mode state (shown after pressing the contrast toggle)
   default: (
-    primary: #1e4aff,
-    secondary: #ff7a1a,
-    shadow: #0a2670,
+    primary: #333333,
+    secondary: #666a86,
+    shadow: #22252e,
     white: #fff0eb,
   ),
 
+  // "contrasted" is the state shown on page load
   contrasted: (
-    primary: #1e4aff,
-    secondary: #ff7a1a,
-    shadow: #0a2670,
+    primary: #40e0d0,
+    secondary: #ff7f50,
+    shadow: #0e7a70,
     white: #fff0eb,
   ),
 );
