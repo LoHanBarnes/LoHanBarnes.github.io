@@ -5,6 +5,10 @@
  *
  * icon: one of the keys rendered by src/components/AAwardIcon.astro
  * size: 'lg' (4 cols x 2 rows), 'md' (2 cols x 2 rows), 'sm' (2 cols x 1 row)
+ * description: shown in the hover panel instead of `detail`, if you want
+ *   something longer — falls back to `detail` when left out
+ * image: optional path (e.g. '/images/awards/rover.jpg') shown in the
+ *   hover panel — leave out for no image
  */
 
 export type AwardSize = 'lg' | 'md' | 'sm'
@@ -17,6 +21,8 @@ export interface Award {
   year: string
   icon: AwardIcon
   size: AwardSize
+  description?: string
+  image?: string
 }
 
 export const awards: Award[] = [

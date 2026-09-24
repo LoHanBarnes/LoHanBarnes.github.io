@@ -34,7 +34,12 @@ import { awards } from '../config/awards'
       <ul class="s__awards">
         {
           awards.map((award) => (
-            <li class={`s__award s__award--${award.size} js-award`}>
+            <li
+              class={`s__award s__award--${award.size} js-award`}
+              data-name={award.name}
+              data-description={award.description || award.detail || ''}
+              data-image={award.image || ''}
+            >
               <span class="s__award__inner">
                 <AAwardIcon icon={award.icon} class="s__award__icon" />
                 <span class="s__award__name">{award.name}</span>
@@ -124,7 +129,11 @@ import { awards } from '../config/awards'
     <path class="js-path" d=""></path>
   </svg>
 
-  <canvas class="s__canvas js-canvas"></canvas>
+  <div class="s__award-tooltip js-award-tooltip">
+    <img class="s__award-tooltip__image js-award-tooltip-image" alt="" />
+    <div class="s__award-tooltip__name js-award-tooltip-name"></div>
+    <div class="s__award-tooltip__desc js-award-tooltip-desc"></div>
+  </div><!-- .s__award-tooltip -->
 </section>
 
 <script>
@@ -136,14 +145,14 @@ import { awards } from '../config/awards'
     inner: HTMLElement
     svg: HTMLElement
     path: HTMLElement
-    canvas: HTMLCanvasElement
-    ctx: CanvasRenderingContext2D
     awards: NodeListOf<HTMLElement>
 
-    smileyImages: {
-      main: HTMLImageElement
-      contrasted: HTMLImageElement
-    }
+    tooltip: HTMLElement
+    tooltipName: HTMLElement
+    tooltipDesc: HTMLElement
+    tooltipImage: HTMLImageElement
+    hoveredAward: HTMLElement
+    hideTimeout: number
 
     bounding: {
       left: number
@@ -163,7 +172,6 @@ import { awards } from '../config/awards'
     }
 
     lines: any[]
-    smileys: any[]
 
     isPaused: boolean
     isForced: boolean
@@ -177,13 +185,18 @@ import { awards } from '../config/awards'
       this.inner = this.el.querySelector('.js-inner')
       this.svg = this.el.querySelector('.js-grid')
       this.path = this.el.querySelector('.js-path')
-      ;(this.canvas = document.querySelector('.js-canvas')),
-        (this.ctx = this.canvas.getContext('2d'))
       this.awards = this.el.querySelectorAll('.js-award')
+
+      this.tooltip = document.querySelector('.js-award-tooltip')
+      this.tooltipName = this.tooltip.querySelector('.js-award-tooltip-name')
+      this.tooltipDesc = this.tooltip.querySelector('.js-award-tooltip-desc')
+      this.tooltipImage = this.tooltip.querySelector('.js-award-tooltip-image')
 
       // Properties
       this.lines = []
-      this.smileys = []
+
+      this.hoveredAward = null
+      this.hideTimeout = null
 
       this.isPaused = true
       this.isForced = false
@@ -200,8 +213,6 @@ import { awards } from '../config/awards'
      * Init
      */
     init() {
-      this.createSmiley()
-
       this.setSize()
       this.setScroll()
 
@@ -238,14 +249,40 @@ import { awards } from '../config/awards'
       this.awards.forEach((award) => {
         observer.observe(award)
 
-        const awardInteraction = this.onAwardInteraction.bind(this, award)
-        award.addEventListener('mouseenter', awardInteraction, {
+        award.addEventListener(
+          'mouseenter',
+          this.onAwardEnter.bind(this, award),
+          { passive: true }
+        )
+        award.addEventListener('mouseleave', this.onAwardLeave.bind(this), {
           passive: true,
         })
-        award.addEventListener('touchstart', awardInteraction, {
-          passive: true,
-        })
+
+        award.addEventListener(
+          'touchstart',
+          this.onAwardEnter.bind(this, award),
+          { passive: true }
+        )
       })
+
+      // Keep the panel open while the cursor is over it, not just the tile
+      this.tooltip.addEventListener(
+        'mouseenter',
+        this.onTooltipEnter.bind(this),
+        { passive: true }
+      )
+      this.tooltip.addEventListener(
+        'mouseleave',
+        this.onAwardLeave.bind(this),
+        { passive: true }
+      )
+
+      // Tap anywhere outside the active tile/panel to close it on touch
+      document.addEventListener(
+        'touchstart',
+        this.onDocumentTouch.bind(this),
+        { passive: true }
+      )
 
       this.el.addEventListener('intersect', this.onIntersect.bind(this), {
         passive: true,
@@ -295,39 +332,105 @@ import { awards } from '../config/awards'
     }
 
     /**
-     * Award interaction handler
+     * Award hover start — populate, position, and show the panel,
+     * anchored to the award tile rather than the cursor
      */
-    onAwardInteraction(award) {
-      award.classList.add('is-active')
+    onAwardEnter(award) {
+      clearTimeout(this.hideTimeout)
 
-      this.throwSmileys(award)
+      this.hoveredAward = award
 
-      setTimeout(() => {
-        award.classList.remove('is-active')
-      }, 100)
+      const { name, description, image } = award.dataset
+
+      this.tooltipName.textContent = name
+
+      if (description) {
+        this.tooltipDesc.textContent = description
+        this.tooltipDesc.style.display = ''
+      } else {
+        this.tooltipDesc.style.display = 'none'
+      }
+
+      if (image) {
+        this.tooltipImage.src = image
+        this.tooltipImage.style.display = ''
+      } else {
+        this.tooltipImage.removeAttribute('src')
+        this.tooltipImage.style.display = 'none'
+      }
+
+      this.tooltip.classList.add('is-visible')
+
+      this.positionTooltip(award)
     }
 
     /**
-     * Create smiley
+     * Position the panel just below (or above, if it would overflow) the
+     * award tile it describes
      */
-    createSmiley() {
-      const mainImg = new Image(100, 100)
-      mainImg.src = '/images/asset-smiley--main.svg'
+    positionTooltip(award) {
+      const gap = 12
+      const margin = 8
 
-      const contrastedImg = new Image(100, 100)
-      contrastedImg.src = '/images/asset-smiley--contrasted.svg'
+      const rect = award.getBoundingClientRect()
+      const tooltipRect = this.tooltip.getBoundingClientRect()
 
-      this.smileyImages = {
-        main: mainImg,
-        contrasted: contrastedImg,
+      let left = rect.left + rect.width / 2 - tooltipRect.width / 2
+      left = Math.max(
+        margin,
+        Math.min(left, window.innerWidth - tooltipRect.width - margin)
+      )
+
+      let top = rect.bottom + gap
+      if (top + tooltipRect.height > window.innerHeight - margin) {
+        top = rect.top - gap - tooltipRect.height
       }
+
+      this.tooltip.style.setProperty('--x', `${left}px`)
+      this.tooltip.style.setProperty('--y', `${top}px`)
+    }
+
+    /**
+     * Cursor moved onto the panel itself — cancel any pending close
+     */
+    onTooltipEnter() {
+      clearTimeout(this.hideTimeout)
+    }
+
+    /**
+     * Cursor left the tile or the panel — close shortly after, unless the
+     * other one is entered in the meantime
+     */
+    onAwardLeave() {
+      clearTimeout(this.hideTimeout)
+
+      this.hideTimeout = window.setTimeout(() => {
+        this.tooltip.classList.remove('is-visible')
+        this.hoveredAward = null
+      }, 150)
+    }
+
+    /**
+     * Touch devices have no hover — tapping outside the active tile/panel
+     * closes it
+     */
+    onDocumentTouch(e) {
+      if (!this.hoveredAward) return
+
+      const target = e.target
+      if (this.hoveredAward.contains(target) || this.tooltip.contains(target)) {
+        return
+      }
+
+      this.tooltip.classList.remove('is-visible')
+      this.hoveredAward = null
     }
 
     /**
      * Set size
      */
     setSize() {
-      const { canvas, svg } = this
+      const { svg } = this
 
       const bounding = this.el.getBoundingClientRect()
 
@@ -343,9 +446,6 @@ import { awards } from '../config/awards'
 
       svg.style.width = `${this.bounding.width}px`
       svg.style.height = `${this.bounding.height}px`
-
-      canvas.width = this.bounding.width
-      canvas.height = this.bounding.height
     }
 
     /**
@@ -557,62 +657,6 @@ import { awards } from '../config/awards'
     }
 
     /**
-     * Throw smileys
-     */
-    throwSmileys(award) {
-      const { el, ctx, smileyImages, smileys } = this
-
-      const image = document.documentElement.classList.contains(
-        'theme-contrasted'
-      )
-        ? smileyImages.contrasted
-        : smileyImages.main
-
-      const elBounding = el.getBoundingClientRect()
-      const awardBounding = award.getBoundingClientRect()
-
-      const x = awardBounding.left + awardBounding.width * 0.5 - elBounding.left
-      const y = awardBounding.top + awardBounding.height * 0.5 - elBounding.top
-
-      const maxSmileys = window.safeWidth > 767 ? 10 : 5
-      for (let i = 0; i < maxSmileys; i++) {
-        const smiley = new Smiley(ctx, image, x, y)
-
-        smileys.push(smiley)
-      }
-    }
-
-    /**
-     * Move smileys
-     */
-    moveSmileys() {
-      const { bounding, smileys } = this
-
-      smileys.forEach((smiley) => {
-        smiley.move()
-
-        if (smiley.y > bounding.height) {
-          smileys.splice(smileys.indexOf(smiley), 1)
-        }
-      })
-    }
-
-    /**
-     * Draw canvas
-     */
-    drawCanvas() {
-      const { bounding, ctx, smileys } = this
-
-      ctx.fillStyle = 'red'
-
-      ctx.clearRect(0, 0, bounding.width, bounding.height)
-
-      smileys.forEach((smiley) => {
-        smiley.draw()
-      })
-    }
-
-    /**
      * Tick
      */
     tick() {
@@ -633,93 +677,7 @@ import { awards } from '../config/awards'
         this.drawLines()
       }
 
-      // Smileys
-      if (this.smileys.length) {
-        this.moveSmileys()
-        this.drawCanvas()
-      }
-
       this.isForced = false
-    }
-  }
-
-  class Smiley {
-    ctx: CanvasRenderingContext2D
-    image: HTMLImageElement
-
-    width: number
-    height: number
-    x: number
-    y: number
-    r: number
-    a: number
-    va: number
-    vx: number
-    vy: number
-    vr: number
-
-    /**
-     * Constructor
-     */
-    constructor(ctx, image, x, y) {
-      // Elements
-      this.ctx = ctx
-      this.image = image
-
-      // Properties
-      this.width = 48
-      this.height = 48
-      this.x = x
-      this.y = y
-      this.r = 0
-      this.a = 0.25 + Math.random() * 0.75
-      this.vx = (Math.random() * 2 - 1) * 5
-      this.vy = Math.random() * -10 - 5
-      this.vr = (Math.random() * 2 - 1) * 10
-      this.va = Math.random() * 0.01
-    }
-
-    /**
-     * Move smiley
-     */
-    move() {
-      this.vy += 0.45
-
-      this.x += this.vx
-      this.y += this.vy
-      this.r += this.vr
-      this.a += this.va
-    }
-
-    /**
-     * Draw smiley
-     */
-    draw() {
-      const { ctx, image } = this
-
-      ctx.save()
-
-      ctx.translate(
-        this.x + this.width * 0.5 * this.a,
-        this.y + this.height * 0.5 * this.a
-      )
-
-      ctx.rotate((this.r * Math.PI) / 180)
-
-      ctx.translate(
-        -this.x - this.width * 0.5 * this.a,
-        -this.y - this.height * 0.5 * this.a
-      )
-
-      ctx.drawImage(
-        image,
-        this.x,
-        this.y,
-        this.width * this.a,
-        this.height * this.a
-      )
-
-      ctx.restore()
     }
   }
 
@@ -1110,14 +1068,6 @@ import { awards } from '../config/awards'
           }
         }
 
-        &.is-active {
-          .s__award__inner {
-            scale: 0.9;
-
-            transition: scale 0.1s ease(out-quint);
-          }
-        }
-
         &.is-revealed {
           .s__award__inner {
             translate: 0 0;
@@ -1157,28 +1107,63 @@ import { awards } from '../config/awards'
       }
     }
 
-    .s__canvas {
-      position: absolute;
-      top: 0;
-      left: 0;
-      z-index: 3;
-
-      width: 100%;
-      height: 100%;
-
-      pointer-events: none;
-    }
-
     &.is-out-of-view {
       .s__inner {
         transform: none;
         will-change: none;
       }
 
-      .s__grid,
-      .s__canvas {
+      .s__grid {
         display: none;
       }
+    }
+  }
+
+  .s__award-tooltip {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 20;
+
+    padding: 1rem 1.25rem;
+    width: 16rem;
+
+    background: color(secondary);
+    border: 1px solid color(primary);
+
+    color: color(primary);
+
+    opacity: 0;
+    transform: translate3d(var(--x, 0px), var(--y, 0px), 0);
+    pointer-events: none;
+
+    transition: opacity 0.2s ease(out-quint);
+    will-change: transform, opacity;
+
+    &.is-visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    &__image {
+      display: block;
+      margin: 0 0 0.75rem;
+      width: 100%;
+      height: auto;
+    }
+
+    &__name {
+      margin: 0 0 0.35rem;
+
+      font: 700 0.8rem / 1.1 font-family(fraktion);
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    &__desc {
+      display: block;
+
+      font: 200 1.1rem / 1.4 font-family(editorial);
     }
   }
 </style>
