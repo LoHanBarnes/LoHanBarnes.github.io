@@ -430,8 +430,26 @@ import ASeparator from './ASeparator.astro'
           height: 1.05em;
           line-height: 1.05;
 
+          // The CJK chars never animate (see animateChar), so drop the reel
+          // copies stacked around each glyph; they'd otherwise peek into view.
           :global(.char__inner) {
             top: 0;
+
+            &:before {
+              content: none;
+            }
+
+            &:after {
+              content: attr(data-letter);
+            }
+
+            @at-root {
+              :global(.is-windows) &,
+              :global(.is-android) &,
+              :global(.is-firefox) & {
+                top: 0;
+              }
+            }
           }
         }
 
@@ -466,6 +484,13 @@ import ASeparator from './ASeparator.astro'
         }
       }
 
+      // Vertical spacing between the stacked copies in the :after reel. The
+      // Latin glyphs fill almost the whole 0.8em line box, so at 0.8em the
+      // incoming copy sat flush against the clip edge and peeked in during the
+      // slow start of the ease. The extra 0.1em keeps it fully hidden until
+      // the slide is well underway.
+      $reel-spacing: 0.9em;
+
       @keyframes s-hero-move-to-left {
         0% {
           transform: translate3d(0, 0, 0);
@@ -492,7 +517,7 @@ import ASeparator from './ASeparator.astro'
         }
 
         100% {
-          transform: translate3d(0, -100%, 0);
+          transform: translate3d(0, -$reel-spacing, 0);
         }
       }
 
@@ -502,7 +527,7 @@ import ASeparator from './ASeparator.astro'
         }
 
         100% {
-          transform: translate3d(0, 100%, 0);
+          transform: translate3d(0, $reel-spacing, 0);
         }
       }
 
@@ -557,6 +582,7 @@ import ASeparator from './ASeparator.astro'
           transform: translate3d(0, -50%, 0);
 
           color: color(secondary);
+          line-height: $reel-spacing;
           word-break: break-all;
 
           content: attr(data-letter) attr(data-letter) attr(data-letter);
