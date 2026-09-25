@@ -502,10 +502,12 @@ import { site, socials, nav as menu } from '../config/site'
       @include flex(row, stretch, space-between);
 
       width: 100%;
-      min-height: 6rem;
+      height: 6rem;
+
+      overflow: hidden;
 
       @include mq(phone) {
-        min-height: 4rem;
+        height: 4rem;
       }
     }
 
@@ -622,22 +624,14 @@ import { site, socials, nav as menu } from '../config/site'
 
       a {
         display: block;
-        padding: 2rem 1.5rem;
+        padding: 2rem clamp(0.35rem, 1vw, 1rem);
 
         color: color(secondary);
-        font: 400 14px / 1 font-family(fraktion);
+        font: 400 clamp(9px, 0.75vw, 12px) / 1 font-family(fraktion);
         letter-spacing: 0.05em;
         text-decoration: none;
         text-transform: uppercase;
         white-space: nowrap;
-
-        @include mq(desktop-sm) {
-          padding: 2rem 1rem;
-        }
-
-        @include mq(desktop-xs) {
-          padding: 2rem 0.75rem;
-        }
 
         @keyframes blink-in {
           0%,
@@ -910,11 +904,7 @@ import { site, socials, nav as menu } from '../config/site'
       );
       border-left: 1px solid color(secondary);
 
-      font: 200 1.25rem / 48px font-family(editorial);
-
-      @include mq(desktop-md) {
-        font-size: 1rem;
-      }
+      font: 200 clamp(0.65rem, 0.9vw, 0.95rem) / 48px font-family(editorial);
 
       @include mq(tablet) {
         order: 3;
