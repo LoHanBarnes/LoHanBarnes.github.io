@@ -9,6 +9,8 @@
  *   something longer — falls back to `detail` when left out
  * image: optional path (e.g. '/images/awards/rover.jpg') shown in the
  *   hover panel — leave out for no image
+ * video: optional path (e.g. '/videos/awards/rover.mp4') shown instead of
+ *   `image` if both are set — plays muted/looped in the hover panel
  */
 
 export type AwardSize = 'lg' | 'md' | 'sm'
@@ -23,6 +25,7 @@ export interface Award {
   size: AwardSize
   description?: string
   image?: string
+  video?: string
 }
 
 export const awards: Award[] = [
@@ -41,6 +44,7 @@ export const awards: Award[] = [
     year: '2025',
     icon: 'lightbulb',
     size: 'md',
+    image: '/images/awards/ucla-rover.png',
   },
   {
     id: 'ucla-rover-2nd',
@@ -49,6 +53,7 @@ export const awards: Award[] = [
     year: '2025',
     icon: 'medal',
     size: 'md',
+    video: '/videos/awards/ucla-rover-2nd.mp4',
   },
   {
     id: 'esports-clash-royale',
@@ -57,6 +62,7 @@ export const awards: Award[] = [
     year: '2026',
     icon: 'trophy',
     size: 'md',
+    image: '/images/awards/esports-clash-royale.png',
   },
   {
     id: 'olympiad-cad',

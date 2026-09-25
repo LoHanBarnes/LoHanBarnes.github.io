@@ -39,6 +39,7 @@ import { awards } from '../config/awards'
               data-name={award.name}
               data-description={award.description || award.detail || ''}
               data-image={award.image || ''}
+              data-video={award.video || ''}
             >
               <span class="s__award__inner">
                 <AAwardIcon icon={award.icon} class="s__award__icon" />
@@ -131,6 +132,12 @@ import { awards } from '../config/awards'
 
   <div class="s__award-tooltip js-award-tooltip">
     <img class="s__award-tooltip__image js-award-tooltip-image" alt="" />
+    <video
+      class="s__award-tooltip__video js-award-tooltip-video"
+      muted
+      loop
+      playsinline
+    ></video>
     <div class="s__award-tooltip__name js-award-tooltip-name"></div>
     <div class="s__award-tooltip__desc js-award-tooltip-desc"></div>
   </div><!-- .s__award-tooltip -->
@@ -151,6 +158,7 @@ import { awards } from '../config/awards'
     tooltipName: HTMLElement
     tooltipDesc: HTMLElement
     tooltipImage: HTMLImageElement
+    tooltipVideo: HTMLVideoElement
     hoveredAward: HTMLElement
     hideTimeout: number
 
@@ -191,6 +199,7 @@ import { awards } from '../config/awards'
       this.tooltipName = this.tooltip.querySelector('.js-award-tooltip-name')
       this.tooltipDesc = this.tooltip.querySelector('.js-award-tooltip-desc')
       this.tooltipImage = this.tooltip.querySelector('.js-award-tooltip-image')
+      this.tooltipVideo = this.tooltip.querySelector('.js-award-tooltip-video')
 
       // Properties
       this.lines = []
@@ -340,7 +349,7 @@ import { awards } from '../config/awards'
 
       this.hoveredAward = award
 
-      const { name, description, image } = award.dataset
+      const { name, description, image, video } = award.dataset
 
       this.tooltipName.textContent = name
 
@@ -351,12 +360,28 @@ import { awards } from '../config/awards'
         this.tooltipDesc.style.display = 'none'
       }
 
-      if (image) {
+      // Video takes priority over a static image when both are set
+      if (video) {
+        this.tooltipVideo.src = video
+        this.tooltipVideo.style.display = ''
+        this.tooltipVideo.play()
+
+        this.tooltipImage.removeAttribute('src')
+        this.tooltipImage.style.display = 'none'
+      } else if (image) {
         this.tooltipImage.src = image
         this.tooltipImage.style.display = ''
+
+        this.tooltipVideo.pause()
+        this.tooltipVideo.removeAttribute('src')
+        this.tooltipVideo.style.display = 'none'
       } else {
         this.tooltipImage.removeAttribute('src')
         this.tooltipImage.style.display = 'none'
+
+        this.tooltipVideo.pause()
+        this.tooltipVideo.removeAttribute('src')
+        this.tooltipVideo.style.display = 'none'
       }
 
       this.tooltip.classList.add('is-visible')
@@ -407,6 +432,7 @@ import { awards } from '../config/awards'
       this.hideTimeout = window.setTimeout(() => {
         this.tooltip.classList.remove('is-visible')
         this.hoveredAward = null
+        this.tooltipVideo.pause()
       }, 150)
     }
 
@@ -1157,6 +1183,16 @@ import { awards } from '../config/awards'
       height: auto;
 
       border-radius: 0.5rem;
+    }
+
+    &__video {
+      display: block;
+      margin: 0 0 1rem;
+      width: 100%;
+
+      aspect-ratio: 16 / 9;
+      border-radius: 0.5rem;
+      object-fit: cover;
     }
 
     &__name {
