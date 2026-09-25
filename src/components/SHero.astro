@@ -423,6 +423,16 @@ import ASeparator from './ASeparator.astro'
 
         &:last-of-type {
           justify-self: start;
+
+          // CJK glyphs fill nearly a full 1em square, taller than the Latin
+          // cap-height this line-height/offset combo was tuned for, so they
+          // need their own roomier box to avoid getting clipped top/bottom.
+          height: 1.05em;
+          line-height: 1.05;
+
+          :global(.char__inner) {
+            top: 0;
+          }
         }
 
         @include mq(tablet) {
