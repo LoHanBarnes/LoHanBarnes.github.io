@@ -280,6 +280,12 @@ import ASeparator from './ASeparator.astro'
       const char =
         this.st.chars[Math.floor(Math.random() * this.st.chars.length)]
 
+      // The slide-in/out reel relies on the custom Latin display font's glyphs
+      // filling their line box exactly; CJK glyphs fall back to a system font
+      // with different vertical metrics, leaving gaps that make the reel go
+      // blank mid-slide instead of cycling smoothly. Skip non-Latin chars.
+      if (/[^\u0000-ɏ]/.test(char.textContent)) return
+
       if (
         char.classList.contains('to-top') ||
         char.classList.contains('to-right') ||
@@ -377,7 +383,9 @@ import ASeparator from './ASeparator.astro'
     }
 
     .s__title {
-      @include flex(row, center, center);
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      align-items: center;
 
       margin: 0;
       padding: 1.5rem 0;
@@ -393,9 +401,8 @@ import ASeparator from './ASeparator.astro'
 
       @include mq(tablet) {
         padding: 1rem;
-        // align-items: center;
-        flex-wrap: wrap;
-        justify-content: flex-start;
+        grid-template-columns: auto 1fr;
+        grid-template-rows: auto auto;
 
         font-size: calc(15vw - 0.5rem);
       }
@@ -410,9 +417,23 @@ import ASeparator from './ASeparator.astro'
         display: block;
         height: 0.7975em;
 
+        &:first-of-type {
+          justify-self: end;
+        }
+
+        &:last-of-type {
+          justify-self: start;
+        }
+
         @include mq(tablet) {
-          flex-grow: 0;
-          flex-shrink: 0;
+          grid-column: 1;
+          grid-row: 1;
+          justify-self: start !important;
+
+          &:last-of-type {
+            grid-column: 1 / -1;
+            grid-row: 2;
+          }
         }
 
         @include mq(phone) {
@@ -423,10 +444,13 @@ import ASeparator from './ASeparator.astro'
       &__asset {
         display: block;
         margin: 0 2rem;
+        justify-self: center;
 
         @include mq(tablet) {
-          // display: none;
-          margin: 0 0 0 auto;
+          grid-column: 2;
+          grid-row: 1;
+          margin: 0;
+          justify-self: end;
           width: 0.375em;
           height: auto;
         }
