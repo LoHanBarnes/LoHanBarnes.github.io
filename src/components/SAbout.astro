@@ -35,7 +35,7 @@ import { awards } from '../config/awards'
         {
           awards.map((award) => (
             <li
-              class={`s__award s__award--${award.size} js-award`}
+              class="s__award js-award"
               data-name={award.name}
               data-description={award.description || award.detail || ''}
               data-image={award.image || ''}
@@ -55,7 +55,7 @@ import { awards } from '../config/awards'
           ))
         }
 
-        <li class="s__award s__award--sm s__award--blank">
+        <li class="s__award s__award--blank">
           <svg
             width="101"
             height="113"
@@ -819,9 +819,8 @@ import { awards } from '../config/awards'
       margin: 0;
       padding: 0;
       display: grid;
-      grid-template-columns: repeat(4, calc(var(--width) / 4));
-      grid-auto-rows: calc(var(--width) / 4 / 0.751);
-      grid-auto-flow: row dense;
+      grid-template-columns: repeat(2, calc(var(--width) / 2));
+      grid-auto-rows: 15rem;
 
       background: repeating-linear-gradient(
         -45deg,
@@ -836,9 +835,8 @@ import { awards } from '../config/awards'
       list-style: none;
       overflow: hidden;
 
-      @include mq(tablet-sm) {
-        grid-template-columns: repeat(4, calc(var(--width) / 4));
-        grid-auto-rows: calc(var(--width) / 4 / 0.75);
+      @include mq(phone) {
+        grid-auto-rows: 11rem;
       }
 
       @at-root :global(.theme-contrasted) & {
@@ -975,56 +973,6 @@ import { awards } from '../config/awards'
           font: 400 11px / 1 font-family(fraktion);
           letter-spacing: 0.05em;
           opacity: 0.6;
-        }
-
-        &--lg {
-          grid-column: span 4;
-          grid-row: span 2;
-
-          .s__award__icon {
-            width: 3rem;
-            height: 3rem;
-          }
-
-          .s__award__name {
-            font-size: 2.25rem;
-
-            @include mq(phone) {
-              font-size: 1.75rem;
-            }
-          }
-
-          .s__award__detail {
-            font-size: 1.5rem;
-
-            @include mq(phone) {
-              font-size: 1.15rem;
-            }
-          }
-        }
-
-        &--md {
-          grid-column: span 2;
-          grid-row: span 2;
-        }
-
-        &--sm {
-          grid-column: span 2;
-          grid-row: span 1;
-
-          .s__award__icon {
-            width: 1.5rem;
-            height: 1.5rem;
-            margin-bottom: 0.35rem;
-          }
-
-          .s__award__name {
-            font-size: 1.1rem;
-          }
-
-          .s__award__detail {
-            font-size: 0.95rem;
-          }
         }
 
         &--blank {
