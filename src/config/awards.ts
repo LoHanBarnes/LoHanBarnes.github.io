@@ -45,7 +45,7 @@ export const awards: Award[] = [
     icon: 'medal',
     video: '/videos/awards/ucla-rover-2nd.mp4',
   },
-  // Row 2-3: all three Science Olympiad awards
+  // Row 2-3: all three Science Olympiad awards, then Student of the Year
   {
     id: 'olympiad-cad',
     name: 'Science Olympiad',
@@ -70,14 +70,6 @@ export const awards: Award[] = [
     icon: 'medal',
     image: '/images/awards/science-olympiad.jpg',
   },
-  // Row 4: Lincoln Engineering Excellence + Student of the Year
-  {
-    id: 'lincoln-engineering',
-    name: 'Lincoln Middle School',
-    detail: 'Engineering Excellence Award',
-    year: '2022',
-    icon: 'gear',
-  },
   {
     id: 'student-of-year',
     name: 'Student of the Year',
@@ -86,7 +78,7 @@ export const awards: Award[] = [
     icon: 'star',
     image: '/images/awards/student-of-the-year.jpg',
   },
-  // Row 5: Clash Royale + Angel Investor
+  // Row 4: Clash Royale + Angel Investor
   {
     id: 'esports-clash-royale',
     name: 'Samohi Esports',
@@ -99,7 +91,7 @@ export const awards: Award[] = [
     id: 'angel-investor',
     name: 'Angel Investor Winner',
     detail: 'Excellent Energy System',
-    year: '',
+    year: '2022',
     icon: 'lightbulb',
     image: '/images/awards/angel-investor.jpg',
   },

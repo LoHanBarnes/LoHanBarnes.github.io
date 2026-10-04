@@ -26,4 +26,6 @@ export const nav = [
   { id: '/capstone-project', text: 'Capstone' },
   { id: '/personal', text: 'Personal' },
   { id: '/samsung-solve', text: 'Samsung Solve' },
+  { id: '/resume', text: 'Resume' },
+  { id: '/thank-you', text: 'Thank You' },
 ]
