@@ -1,6 +1,5 @@
 ---
 import AAwardIcon from './AAwardIcon.astro'
-import { site } from '../config/site'
 import { awards } from '../config/awards'
 import { lifePhotos } from '../config/life'
 ---
@@ -12,19 +11,19 @@ import { lifePhotos } from '../config/life'
 
       <div class="s__content">
         <p>
-          I attend Santa Monica High School, alongside dual-enrollment coursework at Santa Monica College and summer sessions at UCLA, with aspirations toward mechanical engineering. This capstone class is where that interest turns into real projects — designing, building, and iterating on things that actually work (eventually).
+          I am an aspiring Mechanical Engineer. I am the Captain of the “Quest” WET Samohi Team and the “Samsung Solve for Tomorrow” Samohi Team, a member of the FRC Redondo Union High School Team, Co-founder of Mariachi Perla Del Mar, Treasurer of the Samohi Tech Club, a team member for the Samohi Science Olympiad and Model UN teams, a violinist in the Samohi Philharmonic Orchestra, a member of the Nanoengineering, Architecture, and Chess Clubs, and the self-proclaimed most whimsical student.
         </p>
 
         <p>
-          My engineering toolkit centers on CAD (OnShape and Fusion), Arduino-based electronics, and coding in C++ and Java — I built a rover from scratch for a UCLA course, complete with ultrasonic sensors and a brushless gearbox motor, navigating obstacles to retrieve an object.
+          I currently attend Santa Monica High School alongside dual-enrollment courses at Santa Monica College and summer sessions at UCLA. At these institutions, I turn my interests into real projects by learning, designing, building, and creating things for competitions, school, clubs, or things that just tickle my fancy. Through enough trial and error I work to create beautiful pieces of engineering perfection, eventually.
         </p>
 
         <p>
-          Outside the lab, I play violin — I co-founded and lead violin for Mariachi Perla Del Mar, and play in my school's Philharmonic Full Orchestra. I'm fluent in English and Chinese with intermediate Spanish, and split my remaining time between Science Olympiad, several engineering clubs, and a part-time job as a barista.
+          My engineering journey started quite recently, during my sophomore year, when Mr. Eckhart assigned an autonomous robot challenge. Using rusty, sticky metal frames and VEX parts, we were tasked with building an autonomous rover that could follow a colored path, collect an object, and drive back. What hooked me wasn’t the finished robot, but the process. I loved testing my design, diagnosing issues, and fixing the design to be better again, and again, and again. That was my first real experience with robotics and coding, and even though I’ve grown a lot since then, I’m still chasing that feeling of pouring myself into creating something I am actually proud of. Knowing nothing about engineering besides what I learned from years of playing with Legos, I enrolled in a UCLA rovers course which taught me what an Arduino or CAD was. That program only increased my hunger for this feeling of creation. This drive pushed me to join engineering clubs, robotics teams, and meet people who have helped me understand not only how to create something, but why it matters.
         </p>
 
         <p>
-          Reach me at <a href={site.emailHref} target="_blank" rel="noopener">{site.email}</a> or <a href={site.phoneHref}>{site.phone}</a>.
+          When I am not in class, in a robotics lab, or slaving away in Onshape, I pass the time by working on personal projects, participating in coastal cleanups, dueting with my neighbor who plays piano, playing badminton, having formal debates about the most pointless topics with my friends, tutoring my peers in violin or Chinese, drinking boba, falling asleep, or working at my part-time job as a barista.
         </p>
       </div><!-- .s__content -->
     </div><!-- .s__block -->
@@ -944,10 +943,10 @@ import { lifePhotos } from '../config/life'
     .s__content {
       padding: 4.5rem;
 
-      font: 200 2rem / 1.5 font-family(editorial);
+      font: 200 1.5rem / 1.5 font-family(editorial);
 
       @include mq(desktop-xs) {
-        font-size: 1.5rem;
+        font-size: 1.25rem;
       }
 
       @include mq(phone) {
