@@ -1,5 +1,9 @@
 ---
 import { site, socials, nav as menu } from '../config/site'
+
+// Current page, for the active-item bar in the menu
+const path = Astro.url.pathname.replace(/\/$/, '') || '/'
+const isActive = (id: string) => path === id || path.startsWith(id + '/')
 ---
 
 <header class="site-head" data-intersect>
@@ -37,8 +41,17 @@ import { site, socials, nav as menu } from '../config/site'
       <ul class="sb__list">
         {
           menu.map((item) => (
-            <li class="sb__item js-menu-item">
-              <a href={item.id} class="js-menu-link">
+            <li
+              class:list={[
+                'sb__item js-menu-item',
+                { 'is-active': isActive(item.id) },
+              ]}
+            >
+              <a
+                href={item.id}
+                class="js-menu-link"
+                aria-current={isActive(item.id) ? 'page' : undefined}
+              >
                 <span class="sb__text">{item.text}</span>
               </a>
             </li>
@@ -544,6 +557,10 @@ import { site, socials, nav as menu } from '../config/site'
 
       margin: 0 auto 0 0;
       padding: 1.5rem;
+      // Decorative, so it gives up width first when the menu needs room
+      min-width: 0;
+
+      overflow: hidden;
 
       font: 400 8px / 1.4 font-family(fraktion);
       text-transform: uppercase;
@@ -599,8 +616,27 @@ import { site, socials, nav as menu } from '../config/site'
       }
 
       .sb__item {
+        position: relative;
+
+        align-self: stretch;
+        @include flex(row, center, center);
+
         margin: 0;
         padding: 0;
+
+        // Bar along the header's bottom edge under the current page
+        &.is-active:after {
+          position: absolute;
+          right: clamp(0.35rem, 1vw, 1rem);
+          bottom: 0;
+          left: clamp(0.35rem, 1vw, 1rem);
+
+          height: 3px;
+
+          background: color(secondary);
+
+          content: '';
+        }
       }
 
       .sb__text {
@@ -902,9 +938,12 @@ import { site, socials, nav as menu } from '../config/site'
         color(secondary) 50%,
         transparent 50%
       );
+      flex-shrink: 0;
+
       border-left: 1px solid color(secondary);
 
       font: 200 clamp(0.65rem, 0.9vw, 0.95rem) / 48px font-family(editorial);
+      white-space: nowrap;
 
       @include mq(tablet) {
         order: 3;
@@ -982,6 +1021,7 @@ import { site, socials, nav as menu } from '../config/site'
       position: relative;
 
       display: block;
+      flex-shrink: 0;
       padding: 0.75rem;
 
       border-left: 1px solid color(secondary);
