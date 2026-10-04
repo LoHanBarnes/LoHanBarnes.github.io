@@ -2,6 +2,7 @@
 import AAwardIcon from './AAwardIcon.astro'
 import { site } from '../config/site'
 import { awards } from '../config/awards'
+import { lifePhotos } from '../config/life'
 ---
 
 <section id="about" class="s-about" data-intersect>
@@ -130,6 +131,16 @@ import { awards } from '../config/awards'
     <path class="js-path" d=""></path>
   </svg>
 
+  <div class="s__photos js-photos" aria-hidden="true">
+    {
+      lifePhotos.map((photo) => (
+        <div class="s__photo js-photo">
+          <img src={photo.src} alt="" loading="lazy" decoding="async" />
+        </div>
+      ))
+    }
+  </div><!-- .s__photos -->
+
   <div class="s__award-tooltip js-award-tooltip">
     <img class="s__award-tooltip__image js-award-tooltip-image" alt="" />
     <video
@@ -153,6 +164,10 @@ import { awards } from '../config/awards'
     svg: HTMLElement
     path: HTMLElement
     awards: NodeListOf<HTMLElement>
+    photosWrap: HTMLElement
+    photos: NodeListOf<HTMLElement>
+    photoLayout: { side: number; d: number; s: number; rd: number; rs: number }[]
+    photoRows: number
 
     tooltip: HTMLElement
     tooltipName: HTMLElement
@@ -194,6 +209,8 @@ import { awards } from '../config/awards'
       this.svg = this.el.querySelector('.js-grid')
       this.path = this.el.querySelector('.js-path')
       this.awards = this.el.querySelectorAll('.js-award')
+      this.photosWrap = this.el.querySelector('.js-photos')
+      this.photos = this.el.querySelectorAll('.js-photo')
 
       this.tooltip = document.querySelector('.js-award-tooltip')
       this.tooltipName = this.tooltip.querySelector('.js-award-tooltip-name')
@@ -203,6 +220,8 @@ import { awards } from '../config/awards'
 
       // Properties
       this.lines = []
+      this.photoLayout = []
+      this.photoRows = 0
 
       this.hoveredAward = null
       this.hideTimeout = null
@@ -664,6 +683,150 @@ import { awards } from '../config/awards'
       }
 
       this.drawLines()
+      this.drawPhotos(outer, inner)
+    }
+
+    /**
+     * Scatter photos over the left/right walls, in wall space: `d` is depth
+     * (0 = section edge, 1 = center column) and `s` is height (0 = top,
+     * 1 = bottom). Distances are measured in cells 1/4 of the wall deep and
+     * 1/heightCells tall, so circles read as round on the wall rather than
+     * on screen. Seeded, so the layout is the same on every visit.
+     */
+    layoutPhotos(count, heightCells) {
+      let seed = 1248
+      const random = () => {
+        seed = (seed + 0x6d2b79f5) | 0
+        let t = Math.imul(seed ^ (seed >>> 15), 1 | seed)
+        t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296
+      }
+
+      const depthCells = 4
+      const minDepth = 0.04 * depthCells
+      // Past ~2/3 depth the wall gets too squashed for a photo to read
+      const maxDepth = 0.62 * depthCells
+      const gap = 0.12
+
+      const layout = []
+
+      for (let i = 0; i < count; i++) {
+        const side = i % 2
+        const r = 0.3 + random() * 0.12
+        const placed = layout.filter((p) => p.side === side)
+
+        // Best-candidate sampling: of several random spots that fit, keep
+        // the one farthest from its neighbours for an even scatter
+        let best = null
+        let bestDist = -1
+
+        for (let k = 0; k < 60; k++) {
+          const x = minDepth + r + random() * (maxDepth - minDepth - 2 * r)
+          const y = r + gap + random() * (heightCells - 2 * (r + gap))
+
+          let dist = Infinity
+          placed.forEach((p) => {
+            dist = Math.min(dist, Math.hypot(p.x - x, p.y - y) - p.r - r)
+          })
+
+          if (dist >= gap && dist > bestDist) {
+            best = { x, y }
+            bestDist = dist
+          }
+        }
+
+        if (!best) continue
+
+        layout.push({ side, r, x: best.x, y: best.y })
+      }
+
+      return layout.map(({ side, r, x, y }) => ({
+        side,
+        d: x / depthCells,
+        s: y / heightCells,
+        rd: r / depthCells,
+        rs: r / heightCells,
+      }))
+    }
+
+    /**
+     * Project each photo onto its wall. The four corners of the photo's
+     * square go through the same mapping the grid lines use (the eased
+     * depth spacing included), then a matrix3d warps the element onto them,
+     * so the photos tilt and move with the walls as the column scrolls.
+     */
+    drawPhotos(outer, inner) {
+      const size = 240
+
+      // Narrower walls (smaller screens) get more, shorter rows so the
+      // circles keep the same proportions; works out to 12 on desktop
+      const wallWidth = inner.x1 - outer.x1
+      const rows = Math.max(
+        12,
+        Math.round((outer.y2 - outer.y1) / (wallWidth * 0.68))
+      )
+
+      if (rows !== this.photoRows) {
+        this.photoRows = rows
+        this.photoLayout = this.layoutPhotos(this.photos.length, rows)
+      }
+
+      const wallPoint = (side, d, s) => {
+        const t = 1 - Math.pow(1 - d, 2)
+        const ox = side ? outer.x2 : outer.x1
+        const ix = side ? inner.x2 : inner.x1
+        const oy = outer.y1 + (outer.y2 - outer.y1) * s
+        const iy = inner.y1 + (inner.y2 - inner.y1) * s
+
+        return { x: ox + (ix - ox) * t, y: oy + (iy - oy) * t }
+      }
+
+      this.photos.forEach((photo, i) => {
+        const p = this.photoLayout[i]
+
+        photo.style.display = p ? '' : 'none'
+        if (!p) return
+
+        const { rd, rs } = p
+
+        // On the right wall depth runs right-to-left, so swap the depth
+        // edges to keep the photo from being mirrored
+        const near = p.side ? p.d + rd : p.d - rd
+        const far = p.side ? p.d - rd : p.d + rd
+
+        const [p0, p1, p2, p3] = [
+          wallPoint(p.side, near, p.s - rs),
+          wallPoint(p.side, far, p.s - rs),
+          wallPoint(p.side, far, p.s + rs),
+          wallPoint(p.side, near, p.s + rs),
+        ]
+
+        // Unit square -> quad homography (Heckbert)
+        const dx1 = p1.x - p2.x
+        const dx2 = p3.x - p2.x
+        const dx3 = p0.x - p1.x + p2.x - p3.x
+        const dy1 = p1.y - p2.y
+        const dy2 = p3.y - p2.y
+        const dy3 = p0.y - p1.y + p2.y - p3.y
+        const det = dx1 * dy2 - dx2 * dy1
+        const g = (dx3 * dy2 - dx2 * dy3) / det
+        const h = (dx1 * dy3 - dx3 * dy1) / det
+        const a = p1.x - p0.x + g * p1.x
+        const b = p3.x - p0.x + h * p3.x
+        const d = p1.y - p0.y + g * p1.y
+        const e = p3.y - p0.y + h * p3.y
+
+        const m = [
+          a / size, d / size, 0, g / size,
+          b / size, e / size, 0, h / size,
+          0, 0, 1, 0,
+          p0.x, p0.y, 0, 1,
+        ]
+
+        photo.style.transform = `matrix3d(${m.join(',')})`
+      })
+
+      this.photosWrap.classList.add('is-ready')
     }
 
     /**
@@ -1063,6 +1226,52 @@ import { awards } from '../config/awards'
       }
     }
 
+    .s__photos {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 1;
+
+      visibility: hidden;
+      pointer-events: none;
+
+      &.is-ready {
+        visibility: visible;
+      }
+
+      @include mq(phone) {
+        display: none;
+      }
+    }
+
+    .s__photo {
+      position: absolute;
+      top: 0;
+      left: 0;
+
+      box-sizing: border-box;
+      width: 240px;
+      height: 240px;
+
+      background: color(primary);
+      border: 3px solid color(secondary);
+      border-radius: 50%;
+      overflow: hidden;
+
+      transform-origin: 0 0;
+      backface-visibility: hidden;
+
+      will-change: transform;
+
+      img {
+        display: block;
+        width: 100%;
+        height: 100%;
+
+        object-fit: cover;
+      }
+    }
+
     .s__grid {
       position: absolute;
       top: 0;
@@ -1087,7 +1296,8 @@ import { awards } from '../config/awards'
         will-change: none;
       }
 
-      .s__grid {
+      .s__grid,
+      .s__photos {
         display: none;
       }
     }
