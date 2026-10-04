@@ -3,9 +3,20 @@
  * Drives the homepage's 3D "WORK" tile field (src/components/SWork.astro).
  * Each key must be "Dummy" + a number 1-14 (matches the video-loop logic) —
  * add up to 14 entries. `site` is the click destination; use '#' for none.
+ *
+ * images: optional list of pictures for this project's planes. Each project
+ *   gets 4 planes, which cycle through this list (so 1 image = all 4 planes
+ *   show it, 4 images = one each). Leave out to keep the placeholder video.
+ *   Planes are 1082×636 (about 17:10) — images get center-cropped to that.
  */
 
-export const workInfo = {
+export interface WorkProject {
+  title: string
+  site: string
+  images?: string[]
+}
+
+export const workInfo: Record<string, WorkProject> = {
   Dummy1: {
     title: 'RC Car',
     site: '#',
@@ -49,17 +60,21 @@ export const workInfo = {
   Dummy11: {
     title: 'Blog #1',
     site: '/blog/blog-1',
+    images: ['/images/work/blog-1.jpg'],
   },
   Dummy12: {
     title: 'Blog #2',
     site: '/blog/blog-2',
+    images: ['/images/work/blog-2.jpg'],
   },
   Dummy13: {
     title: 'Blog #3',
     site: '/blog/blog-3',
+    images: ['/images/work/blog-3.jpg'],
   },
   Dummy14: {
     title: 'Blog #4',
     site: '/blog/blog-4',
+    images: ['/images/work/blog-4.jpg'],
   },
 }

@@ -1,5 +1,5 @@
 ---
-const { caption, cssClass, index, site, src, total } = Astro.props
+const { caption, cssClass, image, index, site, src, total } = Astro.props
 
 // A random string with the syntax '[a-z][0-9]{3}-index-total'
 const key = Math.random().toString(36).slice(2, 6) + '-' + index + '/' + total
@@ -11,16 +11,29 @@ const isInternal = site.startsWith('/') || site === '#'
 <a-work class={cssClass}>
   <div class="a__inner">
     <a href={site} target={isInternal ? undefined : '_blank'} rel={isInternal ? undefined : 'noopener'}>
-      <video
-        data-src={src}
-        class="a__video js-video"
-        loop
-        muted
-        playsinline
-        width="1082"
-        height="636"
-      >
-      </video>
+      {
+        image ? (
+          <img
+            src={image}
+            alt=""
+            class="a__video a__video--image"
+            loading="eager"
+            decoding="async"
+            width="1082"
+            height="636"
+          />
+        ) : (
+          <video
+            data-src={src}
+            class="a__video js-video"
+            loop
+            muted
+            playsinline
+            width="1082"
+            height="636"
+          />
+        )
+      }
 
       <div class="a__caption">
         <div class="a__caption__text">
@@ -82,7 +95,7 @@ const isInternal = site.startsWith('/') || site === '#'
      * Gets in view
      */
     inView() {
-      this.video.play()
+      this.video?.play()
       this.isPlaying = true
 
       this.classList.add('is-inview')
@@ -92,7 +105,7 @@ const isInternal = site.startsWith('/') || site === '#'
      * Gets out view
      */
     outView() {
-      this.video.pause()
+      this.video?.pause()
       this.isPlaying = false
 
       this.classList.remove('is-inview')
@@ -156,6 +169,11 @@ const isInternal = site.startsWith('/') || site === '#'
       @include mq(phone) {
         max-width: 80vw;
         max-height: 80vh;
+      }
+
+      &--image {
+        aspect-ratio: 1082 / 636;
+        object-fit: cover;
       }
     }
 
