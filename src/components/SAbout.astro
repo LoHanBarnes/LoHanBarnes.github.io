@@ -344,6 +344,11 @@ import { lifePhotos } from '../config/life'
       } else {
         scroll.p = (trigger - scroll.start) / (scroll.end - scroll.start)
       }
+
+      // The panel is fixed-position, so keep it attached to its tile
+      if (this.hoveredAward) {
+        this.positionTooltip(this.hoveredAward)
+      }
     }
 
     /**
@@ -388,6 +393,11 @@ import { lifePhotos } from '../config/life'
         this.tooltipImage.removeAttribute('src')
         this.tooltipImage.style.display = 'none'
       } else if (image) {
+        // The panel's height isn't known until the image loads, so place it
+        // again once it has
+        this.tooltipImage.onload = () => {
+          if (this.hoveredAward === award) this.positionTooltip(award)
+        }
         this.tooltipImage.src = image
         this.tooltipImage.style.display = ''
 
@@ -429,6 +439,12 @@ import { lifePhotos } from '../config/life'
       if (top + tooltipRect.height > window.innerHeight - margin) {
         top = rect.top - gap - tooltipRect.height
       }
+
+      // Tall panels may fit neither below nor above — keep them on screen
+      top = Math.max(
+        margin,
+        Math.min(top, window.innerHeight - tooltipRect.height - margin)
+      )
 
       this.tooltip.style.setProperty('--x', `${left}px`)
       this.tooltip.style.setProperty('--y', `${top}px`)

@@ -52,6 +52,7 @@ export const awards: Award[] = [
     detail: 'Engineering CAD — 5th',
     year: '2026',
     icon: 'medal',
+    image: '/images/awards/science-olympiad.jpg',
   },
   {
     id: 'olympiad-dynamic-planet',
@@ -59,6 +60,7 @@ export const awards: Award[] = [
     detail: 'Dynamic Planet — 9th',
     year: '2026',
     icon: 'medal',
+    image: '/images/awards/science-olympiad.jpg',
   },
   {
     id: 'olympiad-entomology',
@@ -66,6 +68,7 @@ export const awards: Award[] = [
     detail: 'Entomology — 12th',
     year: '2026',
     icon: 'medal',
+    image: '/images/awards/science-olympiad.jpg',
   },
   // Row 4: Lincoln Engineering Excellence + Student of the Year
   {
@@ -81,8 +84,9 @@ export const awards: Award[] = [
     detail: 'Nominee',
     year: '2024',
     icon: 'star',
+    image: '/images/awards/student-of-the-year.jpg',
   },
-  // Row 5: Clash Royale + Million Word Club
+  // Row 5: Clash Royale + Angel Investor
   {
     id: 'esports-clash-royale',
     name: 'Samohi Esports',
@@ -92,10 +96,11 @@ export const awards: Award[] = [
     image: '/images/awards/esports-clash-royale.png',
   },
   {
-    id: 'million-word-club',
-    name: 'Million Word Club',
-    detail: '',
-    year: '2022',
-    icon: 'book',
+    id: 'angel-investor',
+    name: 'Angel Investor Winner',
+    detail: 'Excellent Energy System',
+    year: '',
+    icon: 'lightbulb',
+    image: '/images/awards/angel-investor.jpg',
   },
 ]
