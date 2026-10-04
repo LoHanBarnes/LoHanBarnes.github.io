@@ -22,10 +22,8 @@ export const socials = {
 }
 
 export const nav = [
-  { id: '/', text: 'Home' },
-  { id: '/resources', text: 'Resources' },
-  { id: '/wet-invention-challenge', text: 'WET Challenge' },
+  { id: '/wet-invention-challenge', text: 'WET' },
   { id: '/capstone-project', text: 'Capstone' },
-  { id: '/past-projects', text: 'Past Projects' },
-  { id: '/blog', text: 'Blog' },
+  { id: '/personal', text: 'Personal' },
+  { id: '/samsung-solve', text: 'Samsung Solve' },
 ]
