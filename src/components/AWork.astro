@@ -95,7 +95,8 @@ const isInternal = site.startsWith('/') || site === '#'
      * Gets in view
      */
     inView() {
-      this.video?.play()
+      // Rejects harmlessly if the plane leaves view before playback starts
+      this.video?.play().catch(() => {})
       this.isPlaying = true
 
       this.classList.add('is-inview')
@@ -171,10 +172,9 @@ const isInternal = site.startsWith('/') || site === '#'
         max-height: 80vh;
       }
 
-      &--image {
-        aspect-ratio: 1082 / 636;
-        object-fit: cover;
-      }
+      // Fill the plane whatever the media's own shape (no letterboxing)
+      aspect-ratio: 1082 / 636;
+      object-fit: cover;
     }
 
     .a__caption {

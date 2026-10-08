@@ -43,7 +43,7 @@ for (let i = 1; i <= 14; i++) {
     projects.push({
       caption: project.title,
       site: project.site,
-      src: dummyVideo,
+      src: project.video ?? dummyVideo,
       image: project.images?.[j % project.images.length],
     })
   }

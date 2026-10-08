@@ -8,18 +8,24 @@
  *   gets 4 planes, which cycle through this list (so 1 image = all 4 planes
  *   show it, 4 images = one each). Leave out to keep the placeholder video.
  *   Planes are 1082×636 (about 17:10) — images get center-cropped to that.
+ * video: optional looping video (path under /public, e.g.
+ *   '/videos/work/rc-car.mp4') shown on all 4 planes instead of the
+ *   placeholder. `images` wins if both are set. Also center-cropped to the
+ *   plane shape, and plays muted.
  */
 
 export interface WorkProject {
   title: string
   site: string
   images?: string[]
+  video?: string
 }
 
 export const workInfo: Record<string, WorkProject> = {
   Dummy1: {
     title: 'RC Car',
     site: '#',
+    video: '/videos/work/rc-car-assembly.mp4',
   },
   Dummy2: {
     title: 'Nerf Turret',
